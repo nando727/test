@@ -29,9 +29,11 @@ int main(int argc, char** argv) {
     // Play the game
     play_game(strand);
 
-    fclose(dataFP); // NEW
+    // close files
+    fclose(dataFP); 
     fclose(dictFP);
     
+    // Free all memory
     dataFP = NULL;
     dictFP = NULL;
 
