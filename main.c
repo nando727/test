@@ -30,18 +30,15 @@ int main(int argc, char** argv) {
     play_game(strand);
 
     // close files
-    fclose(dataFP); 
-    fclose(dictFP);
+    //fclose(dataFP); 
+    //fclose(dictFP);
     
     // Free all memory
-    free(dataFP);
-    free(dictFP);
-    
-    dataFP = NULL;
-    dictFP = NULL;
+    //free(dataFP);
+    //free(dictFP);
 
     // Free all strand memory
-    free_strand(strand);
+    free_strand(strand, dictFP, dataFP);
 
     return 0;
 }
