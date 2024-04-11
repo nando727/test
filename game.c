@@ -1,4 +1,4 @@
-/* [Code Description]
+/* game.h declared function implementations for Project 01: Strands
 Author: Fernando Tello
 CPSC1070 - Spring 2024
 Project 01: Strands */

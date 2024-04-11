@@ -77,7 +77,7 @@ void findWordsFromCell(int row, int col, char* path, int index, strand_t* strand
     ...  ...  ...
 
     strands->letters is 2D array of letters in matrix, following for loop operation checks all directions of current index
-    -1 goes back up rows or left columns
+    -1 goes back up rows or towards left columns
     loops through above, below, and current row ( -1 -> 0 -> 1) */
     for (int rowDr = -1; rowDr <= 1; rowDr++) {
         // loops through left, right, and current column ( -1 -> 0 -> 1)
