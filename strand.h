@@ -33,6 +33,6 @@ void generateAndCheckWords(strand_t* strand, char** dictionary, int dictSize); /
 strand_t * create_strand(FILE * dataFP, FILE * dictFP); // creates and populates strand struct
 bool is_word_in_strand(strand_t * strand, char * word); // checks if word is in strand
 void print_strand_matrix(strand_t * strand); // prints strand matrix
-void free_strand(strand_t * strand, FILE * dictFP, FILE * dataFP); // frees all memory allocated for strand
+void free_strand(strand_t * strand); // frees all memory allocated for strand
 
 #endif

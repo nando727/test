@@ -171,7 +171,7 @@ void print_strand_matrix(strand_t * strand) {
 
 
 // REQUIRED
-void free_strand(strand_t * strand, FILE * dataFP, FILE * dictFP) {
+void free_strand(strand_t * strand) {
     for (int i = 0; i < strand->rows; i++) { // loop through and free memory for each row
         free(strand->letters[i]);
     }
@@ -181,11 +181,4 @@ void free_strand(strand_t * strand, FILE * dataFP, FILE * dictFP) {
     }
     free(strand->words); // free memory for words
     free(strand); // free memory for strand itself
-
-    fclose(dataFP); 
-    fclose(dictFP);
-
-    dataFP = NULL;
-    dictFP = NULL;
-
 }
