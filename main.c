@@ -1,4 +1,4 @@
-/* [Code Description]
+/* Main driver for Project 01: Strands
 Author: Fernando Tello
 CPSC1070 - Spring 2024
 Project 01: Strands */
