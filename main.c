@@ -34,6 +34,9 @@ int main(int argc, char** argv) {
     fclose(dictFP);
     
     // Free all memory
+    free(dataFP);
+    free(dictFP);
+    
     dataFP = NULL;
     dictFP = NULL;
 
