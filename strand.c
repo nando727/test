@@ -12,11 +12,6 @@ char** readDictionary(FILE* dictFP, int* dictSize) {
 
    while (fscanf(dictFP, "%s", word) == 1) { // read words from file, each one sepearated by newlines
         if (islower(word[0])) { // ignore uppercase proper nouns
-            // is this needed?
-            for (int i = 0; word[i]; i++) { 
-                word[i] = tolower(word[i]);
-            }
-            
             dict[*dictSize] = strdup(word); // copy word to dict & allcate memory for word copy
             (*dictSize)++; // increment dictSize
 
@@ -29,8 +24,18 @@ char** readDictionary(FILE* dictFP, int* dictSize) {
     return dict; // returns dictionary
 }
 
-bool isValidCell(int row, int col, int rows, int cols) { 
-    return (row >= 0) && (row < rows) && (col >= 0) && (col < cols); // check if cell is within bounds
+bool isValidCell(int currentRow, int currentCol, int rows, int cols) {
+    /*            
+        0,0  0,1  0,2 ...
+        1,0  1,1  1,2 ...
+        2,0  2,1  2,2 ...
+        ...  ...  ...
+
+    Checks if cell is within bounds of matrix
+    Returns true if current row is greater than or equal to 0 & less than rows 
+    AND current column is greater than or equal to 0 & less than columns
+    */
+    return (currentRow >= 0) && (currentRow < rows) && (currentCol >= 0) && (currentCol < cols);
 }
 
 bool isWordInDictionary(const char* word, char** dictionary, int dictSize) {
@@ -55,35 +60,50 @@ void addWordToStrand(strand_t* strand, const char* word) {
 
 void findWordsFromCell(int row, int col, char* path, int index, strand_t* strand, char** dictionary, int dictSize, int wordLen) {
     if (!isValidCell(row, col, strand->rows, strand->cols)) return; // check if cell is within bounds
-    path[index] = strand->letters[row][col]; // add letter to path
-    path[index + 1] = '\0'; // null-terminate string
+    path[index] = strand->letters[row][col]; // add current letter to path
+    path[index + 1] = '\0'; // null terminate string
 
-    if (index + 1 == wordLen) { // check if word matches length
+    if (index + 1 == wordLen) { // check if word matches length, +1 for null terminator
        if (isWordInDictionary(path, dictionary, dictSize)) { // check if word is in dictionary
             addWordToStrand(strand, path); // add word to strand if found & matches length
         }
         return;
     }
-    // explore all 8 directions
-    for (int dRow = -1; dRow <= 1; dRow++) { // loop through rows
-        for (int dCol = -1; dCol <= 1; dCol++) { // loop through columns
-            if (!(dRow == 0 && dCol == 0)) { // check if cell is not the same
-                int newRow = row + dRow; // new row
-                int newCol = col + dCol; // new column
-                findWordsFromCell(newRow, newCol, path, index + 1, strand, dictionary, dictSize, wordLen); // recursively call function with new cell
+    
+    /*            
+    0,0  0,1  0,2 ...
+    1,0  1,1  1,2 ...
+    2,0  2,1  2,2 ...
+    ...  ...  ...
+
+    strands->letters is 2D array of letters in matrix, following for loop operation checks all directions of current index
+    -1 goes back up rows or left columns
+    loops through above, below, and current row ( -1 -> 0 -> 1) */
+    for (int rowDr = -1; rowDr <= 1; rowDr++) {
+        // loops through left, right, and current column ( -1 -> 0 -> 1)
+        for (int colDr = -1; colDr <= 1; colDr++) {
+            if (!(rowDr == 0 && colDr == 0)) { // skip current cell (0,0)
+                int newRow = row + rowDr; // next row
+                int newCol = col + colDr; // next column
+
+                // recursively call using new row & column, index + 1 to move to path's next index
+                findWordsFromCell(newRow, newCol, path, index + 1, strand, dictionary, dictSize, wordLen);
             }
         }
     }
 }
 
 void generateAndCheckWords(strand_t* strand, char** dictionary, int dictSize) {
-    char path[strand->wordLen + 1]; // allocate memory for path, +1 for null-terminator
+    // string that will store letters as findWordsFromCell recursively goes through matrix 
+    char path[strand->wordLen + 1]; // allocate memory size of wordLen, +1 for null-terminator
+
     for (int i = 0; i < strand->rows; i++) { // loop through rows
         for (int j = 0; j < strand->cols; j++) { // loop through columns
-            memset(path, 0, sizeof(path)); // clear path
-
-            // pass in the strand, dictionary, and dictSize
-            findWordsFromCell(i, j, path, 0, strand, dictionary, dictSize, strand->wordLen); // find words from current cell
+            for (int i = 0; i < sizeof(path); i++) { // initialize path as empty string
+                path[i] = '\0';
+            } 
+            // nested for-loop will call findWordsFromCell for each cell in the matrix
+            findWordsFromCell(i, j, path, 0, strand, dictionary, dictSize, strand->wordLen);
         }
     }
 }
@@ -105,11 +125,9 @@ strand_t * create_strand(FILE * dataFP, FILE * dictFP) {
         strand->letters[i] = malloc((strand->cols + 1) * sizeof(char)); // allocate memory for each row
         for (int j = 0; j < strand->cols; j++) { // loop through columns
             fscanf(dataFP, " %c", &strand->letters[i][j]); // read letters from file
-            strand->letters[i][j] = tolower(strand->letters[i][j]); // convert to lowercase
         }
         strand->letters[i][strand->cols] = '\0'; // null-terminate string
     }
-
     strand->words = NULL; // initialize words in strand
     strand->numWords = 0; // initialize number of words in strand
 
