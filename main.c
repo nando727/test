@@ -29,13 +29,14 @@ int main(int argc, char** argv) {
     // Play the game
     play_game(strand);
 
-    // Free all strand memory
-    free_strand(strand);
     fclose(dataFP); // NEW
     fclose(dictFP);
     
     dataFP = NULL;
     dictFP = NULL;
+
+    // Free all strand memory
+    free_strand(strand);
 
     return 0;
 }
