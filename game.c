@@ -56,9 +56,6 @@ void play_game(strand_t * strand) {
     while (found < total) { // loop until all words found
         printf("Guess a word or 'quit': \n");
         scanf("%s", word); // read user input
-        for (int i = 0; word[i]; i++) {
-            word[i] = tolower(word[i]); // convert to lowercase
-        }
         if (strcmp(word, "quit") == 0) { // check if user quit
             printf("You found %d out of %d %d-letter words.\nThanks for playing!\n", found, total, strand->wordLen);
             break; // remove?
